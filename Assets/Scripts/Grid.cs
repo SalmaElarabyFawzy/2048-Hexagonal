@@ -23,7 +23,6 @@ public class Grid : MonoBehaviour
             }
         }
     }
-
     public Raw[] GetRawsInGrid()
     {
         return gridRaws;
