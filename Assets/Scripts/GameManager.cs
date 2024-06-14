@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
 {
     public event EventHandler OnGameOver;
     public event EventHandler OnWinning;
-    [SerializeField] private GameObject tilePrefab;
+    [SerializeField] private Tile tilePrefab;
     [SerializeField] private GameInput gameInput;
     [SerializeField] private Grid grid;
     [SerializeField] private CellsManager cellsController;
@@ -71,14 +71,9 @@ public class GameManager : MonoBehaviour
         
         for (int responeNumber = 0; responeNumber < numberOfRespones; responeNumber++)
         {
-            if (emptyCellsList.Count == 0)
-            {
-                Debug.Log("Empty");
-                return;
-            }
             int randomIndex = Random.Range(0, emptyCellsList.Count);
             Cell emptyCell = emptyCellsList[randomIndex];
-            Tile newTile = Instantiate(tilePrefab).GetComponent<Tile>();
+            Tile newTile = Instantiate(tilePrefab , grid.transform);
             newTile.SetParentCell(emptyCell);
             if (timeUntilFourRespone == 10)
             {

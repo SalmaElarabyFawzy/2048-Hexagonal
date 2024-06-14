@@ -30,7 +30,7 @@ public class Tile : MonoBehaviour
     
     public void SetParentCell(Cell cell)
     {
-        transform.parent = cell.transform;
+        //transform.parent = cell.transform;
         transform.position = cell.transform.position;
         cell.tile = this;
         cell.empty = false;
