@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using UnityEngine;
 
 public class CellsManager : MonoBehaviour
@@ -11,7 +10,6 @@ public class CellsManager : MonoBehaviour
     }
     [SerializeField] private Grid grid;
     private int maxCellValue;
-    private bool animationEnded = false;
     public enum MovementDirection
     {
         Right,
@@ -72,24 +70,23 @@ public class CellsManager : MonoBehaviour
         Cell nextCell = GetNextCellWithDirection(thisCell, movementDirection);
         while ( nextCell != null && nextCell.empty)
         {
-            animationEnded = false;
-            thisCell.tile.SetParentCell(nextCell);
-            nextCell.tile = thisCell.tile;
+            thisCell.tile.SetTileOnCell(nextCell);
             thisCell.Clear();
             thisCell = nextCell;
             nextCell = GetNextCellWithDirection(thisCell, movementDirection);
         }
-        
         if( nextCell != null && nextCell.tile.GetTileValue() == thisCell.tile.GetTileValue() )
         {
             int newCellNumber = nextCell.tile.GetTileValue() + thisCell.tile.GetTileValue() ;
             InvokeOnScoreChangeEvent(newCellNumber);
             maxCellValue = Mathf.Max(maxCellValue, newCellNumber);
             nextCell.tile.SetTileColorAndValue(newCellNumber);
-            Destroy(thisCell.tile.gameObject);
+            thisCell.tile.InvokeAnimationEvent(TileAnimation.AnimationState.Move , nextCell.transform.position , true );
             thisCell.Clear();
           
         }
+        else 
+            thisCell.tile.InvokeAnimationEvent(TileAnimation.AnimationState.Move , thisCell.transform.position , false );
     }
     public Cell GetNextCellWithDirection(Cell thisCell,  MovementDirection movementDirection)
     {
@@ -180,7 +177,7 @@ public class CellsManager : MonoBehaviour
         return grid.GetCellInSpecificDirection(nextCellCoordinates);
     }
 
-    public int CheckIfThereIsMovementAvilable()
+    public bool IsThereMovementAvilable()
     {
         int numberOfMovementsAvilable = 0;
         foreach (Raw raw in grid.GetRawsInGrid())
@@ -190,33 +187,36 @@ public class CellsManager : MonoBehaviour
                 if(cell.IsCenterCell)
                     continue;
                 if (cell.empty)
-                {
-                    numberOfMovementsAvilable++;
-                    continue;
-                }
-                Cell nextCell = GetNextCellWithDirection(cell , MovementDirection.Right);
-                if (CanSumTheseCells(cell,  nextCell))
-                    numberOfMovementsAvilable++;
-                nextCell = GetNextCellWithDirection(cell , MovementDirection.Left);
-                if (CanSumTheseCells(cell,  nextCell))
-                    numberOfMovementsAvilable++;
-                nextCell = GetNextCellWithDirection(cell , MovementDirection.RightDown);
-                if (CanSumTheseCells(cell,  nextCell))
-                    numberOfMovementsAvilable++;
-                nextCell = GetNextCellWithDirection(cell , MovementDirection.RightUp);
-                if (CanSumTheseCells(cell,  nextCell))
-                    numberOfMovementsAvilable++;
-                nextCell = GetNextCellWithDirection(cell , MovementDirection.LeftUp);
-                if (CanSumTheseCells(cell,  nextCell))
-                    numberOfMovementsAvilable++;
-                nextCell = GetNextCellWithDirection(cell , MovementDirection.LeftDown);
-                if (CanSumTheseCells(cell,  nextCell))
-                    numberOfMovementsAvilable++;
+                    return true;
+                if (CanMergeWithNeighbours(cell))
+                    return true;
             }
         }
-        return numberOfMovementsAvilable;
+        return false;
     }
 
+    private bool CanMergeWithNeighbours(Cell cell)
+    {
+        Cell nextCell = GetNextCellWithDirection(cell , MovementDirection.Right);
+        if (CanSumTheseCells(cell,  nextCell))
+            return true;
+        nextCell = GetNextCellWithDirection(cell , MovementDirection.Left);
+        if (CanSumTheseCells(cell,  nextCell))
+            return true;
+        nextCell = GetNextCellWithDirection(cell , MovementDirection.RightDown);
+        if (CanSumTheseCells(cell,  nextCell))
+            return true;
+        nextCell = GetNextCellWithDirection(cell , MovementDirection.RightUp);
+        if (CanSumTheseCells(cell,  nextCell))
+            return true;
+        nextCell = GetNextCellWithDirection(cell , MovementDirection.LeftUp);
+        if (CanSumTheseCells(cell,  nextCell))
+            return true;
+        nextCell = GetNextCellWithDirection(cell , MovementDirection.LeftDown);
+        if (CanSumTheseCells(cell,  nextCell))
+            return true;
+        return false;
+    }
     public int GetMaxValueOnCells()
     {
         return maxCellValue;

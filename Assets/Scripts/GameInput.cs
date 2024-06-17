@@ -4,12 +4,6 @@ using UnityEngine.InputSystem;
 
 public class GameInput: MonoBehaviour
 {
-
-
-    private CellsManager.MovementDirection _direction;
-    private bool SecondaryKeyWasPressed = false;
-    private bool rightKeyWasPressed = false;
-    private bool leftKeyWasPressed = false;
     public event EventHandler<KeysPressedEventArgs> OnKeysPressed; 
     public class KeysPressedEventArgs : EventArgs
     {
@@ -19,7 +13,10 @@ public class GameInput: MonoBehaviour
     private InputAction downArrow;
     private InputAction rightArrow;
     private InputAction leftArrow;
-    
+    private CellsManager.MovementDirection _direction;
+    private bool SecondaryKeyWasPressed = false;
+    private bool rightKeyWasPressed = false;
+    private bool leftKeyWasPressed = false;
     private void Start()
     {
         upArrow = new InputAction(
@@ -154,7 +151,6 @@ public class GameInput: MonoBehaviour
             Debug.Log(_direction.ToString());
         };
     }
-
     private void InvokeOnMovementPerformedEvent(CellsManager.MovementDirection direction)
     {
         OnKeysPressed?.Invoke(this , new KeysPressedEventArgs

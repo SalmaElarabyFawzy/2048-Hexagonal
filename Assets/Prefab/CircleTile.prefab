@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 4141130563768703178}
   - component: {fileID: 8055698697117994061}
   - component: {fileID: 4632745354661590417}
+  - component: {fileID: 5274818654966429481}
+  - component: {fileID: 4143749206561677689}
   m_Layer: 5
   m_Name: CircleTile
   m_TagString: Untagged
@@ -60,7 +62,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -103,6 +105,37 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9fded170a817f4a41bc6d005e16e32ae, type: 2}
   tileBackGround: {fileID: 8055698697117994061}
   tileText: {fileID: 816109765280294434}
+--- !u!114 &5274818654966429481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1684048258947019018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ad946cee931801449a990eb0da250df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tile: {fileID: 4632745354661590417}
+  fade: {fileID: 4143749206561677689}
+--- !u!114 &4143749206561677689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1684048258947019018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92f855c6c3e58c4479a3fc0bf9d85066, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageList:
+  - {fileID: 8055698697117994061}
+  textList:
+  - {fileID: 816109765280294434}
+  fadeDuration: 0.1
 --- !u!1 &8949579210918041807
 GameObject:
   m_ObjectHideFlags: 0

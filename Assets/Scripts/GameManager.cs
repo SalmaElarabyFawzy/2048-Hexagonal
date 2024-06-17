@@ -1,7 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int desiredValue = 2048;
     private int numberOfRespones = 2;
     private int timeUntilFourRespone = 0;
+    private bool wait = true;
     private void Awake()
     {
         gameInput.OnKeysPressed += GetInput;
@@ -27,35 +28,44 @@ public class GameManager : MonoBehaviour
 
     private void GetInput(object sender, GameInput.KeysPressedEventArgs keys)
     {
-        if(keys.KeysPressed == CellsManager.MovementDirection.Right)
+        if(wait)
         {
-            cellsController.MoveRight();
-        }
-        if(keys.KeysPressed == CellsManager.MovementDirection.Left)
-        {
-            cellsController.MoveLeft();
-        }
-        if(keys.KeysPressed == CellsManager.MovementDirection.LeftUp || keys.KeysPressed == CellsManager.MovementDirection.RightUp)
-        {
-            cellsController.MoveLeftUpOrRightUp(keys.KeysPressed);
-        }
-        if(keys.KeysPressed == CellsManager.MovementDirection.RightDown || keys.KeysPressed == CellsManager.MovementDirection.LeftDown )
-        {
-            cellsController.MoveLeftDownOrRightDown(keys.KeysPressed);
-        }
-        ResponeNewTile();
-        if(cellsController.GetMaxValueOnCells() >= desiredValue)
-        {
-            InvokeWinningEvent();
-            Debug.Log("WIN");
-        }
-        else
-        {
-            int numberOfMovementsAvilable = cellsController.CheckIfThereIsMovementAvilable();
-            if(numberOfMovementsAvilable == 0)
+            if (keys.KeysPressed == CellsManager.MovementDirection.Right)
             {
-                InvokeGameOverEvent();
-                Debug.Log("Game Over");
+                cellsController.MoveRight();
+            }
+
+            if (keys.KeysPressed == CellsManager.MovementDirection.Left)
+            {
+                cellsController.MoveLeft();
+            }
+
+            if (keys.KeysPressed == CellsManager.MovementDirection.LeftUp ||
+                keys.KeysPressed == CellsManager.MovementDirection.RightUp)
+            {
+                cellsController.MoveLeftUpOrRightUp(keys.KeysPressed);
+            }
+
+            if (keys.KeysPressed == CellsManager.MovementDirection.RightDown ||
+                keys.KeysPressed == CellsManager.MovementDirection.LeftDown)
+            {
+                cellsController.MoveLeftDownOrRightDown(keys.KeysPressed);
+            }
+
+            StartCoroutine(WaitUntilMoveComplete());
+            ResponeNewTile();
+            if (cellsController.GetMaxValueOnCells() >= desiredValue)
+            {
+                InvokeWinningEvent();
+                Debug.Log("WIN");
+            }
+            else
+            {
+                if (!cellsController.IsThereMovementAvilable())
+                {
+                    InvokeGameOverEvent();
+                    Debug.Log("Game Over");
+                }
             }
         }
     }
@@ -74,7 +84,8 @@ public class GameManager : MonoBehaviour
             int randomIndex = Random.Range(0, emptyCellsList.Count);
             Cell emptyCell = emptyCellsList[randomIndex];
             Tile newTile = Instantiate(tilePrefab , grid.transform);
-            newTile.SetParentCell(emptyCell);
+            newTile.SetTileOnCell(emptyCell);
+            newTile.transform.position = emptyCell.transform.position;
             if (timeUntilFourRespone == 10)
             {
                 newTile.SetTileColorAndValue(4);
@@ -85,8 +96,8 @@ public class GameManager : MonoBehaviour
                 newTile.SetTileColorAndValue(2);
                 timeUntilFourRespone++;
             }
+            newTile.InvokeAnimationEvent(TileAnimation.AnimationState.Fade , Vector3.zero , false);
             emptyCellsList.RemoveAt(randomIndex);
-           
         }
     }
     private void InvokeGameOverEvent()
@@ -102,5 +113,12 @@ public class GameManager : MonoBehaviour
     {
        grid.ClearGrid();
        ResponeNewTile();
+    }
+
+    private IEnumerator WaitUntilMoveComplete()
+    {
+        wait = false;
+        yield return new WaitForSeconds(0.1f);
+        wait = true;
     }
 }

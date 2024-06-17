@@ -1,7 +1,6 @@
 using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameUIManager : MonoBehaviour
@@ -63,6 +62,7 @@ public class GameUIManager : MonoBehaviour
         win.SetActive(false);
         gameOver.SetActive(false);
         scoreTxt.text = "0";
+        score = 0;
         gameManager.NewGame();
     }
 }
