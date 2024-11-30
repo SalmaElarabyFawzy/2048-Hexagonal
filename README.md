@@ -1,1 +1,1 @@
-[2048 Hexagonal](https://salma-fawzy.itch.io/2048)
+**itch.io:** [2048 Hexagonal](https://salma-fawzy.itch.io/2048)
